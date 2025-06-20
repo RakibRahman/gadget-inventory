@@ -11,13 +11,20 @@ open class UserService {
     private val userMap = ConcurrentHashMap<String, User>()
 
     init {
-        addUser(User(id = "1", name = "Alice", email = "alice@example.com", role = UserRole.ADMIN))
-        addUser(User(id="2",name = "Bob", email = "bob@example.com", role = UserRole.MODERATOR))
-        addUser(User(id = "3", name = "Charlie", email = "charlie@example.com"))
+        addUser(User( name = "Alice", email = "alice@example.com", role = UserRole.ADMIN))
+        addUser(User(name = "Bob", email = "bob@example.com", role = UserRole.MODERATOR))
+        addUser(User(name = "Charlie", email = "charlie@example.com"))
     }
 
-    fun addUser(user: User){
-        userMap[user.id as String] = user
+    fun addUser(user: User): User{
+       val userId =  UUID.randomUUID().toString()
+        val newUser = user.copy(id=userId)
+        userMap[userId] = newUser
+        return newUser
+    }
+
+    fun getAllUser(): Collection<User>{
+        return userMap.values
     }
 
      fun getUser(id: String): User? {
