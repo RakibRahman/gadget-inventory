@@ -2,7 +2,7 @@ package com.example.controller
 
 import com.example.dto.Message
 import com.example.dto.User
-import com.example.model.UserService
+import com.example.service.UserService
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Body

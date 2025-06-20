@@ -1,4 +1,4 @@
-package com.example.model
+package com.example.service
 
 import com.example.dto.User
 import com.example.dto.UserRole
@@ -11,12 +11,12 @@ open class UserService {
     private val userMap = ConcurrentHashMap<String, User>()
 
     init {
-        addUser(User( name = "Alice", email = "alice@example.com", role = UserRole.ADMIN))
+        addUser(User(name = "Alice", email = "alice@example.com", role = UserRole.ADMIN))
         addUser(User(name = "Bob", email = "bob@example.com", role = UserRole.MODERATOR))
         addUser(User(name = "Charlie", email = "charlie@example.com"))
     }
 
-    fun addUser(user: User): User{
+    fun addUser(user: User): User {
        val userId =  UUID.randomUUID().toString()
         val newUser = user.copy(id=userId)
         userMap[userId] = newUser
