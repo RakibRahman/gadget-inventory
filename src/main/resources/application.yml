@@ -1,0 +1,9 @@
+micronaut:
+  application:
+    name: gadget-inventory
+  security:
+    enabled: false
+
+datasources:
+  default:
+    enabled: false
