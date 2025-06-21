@@ -2,61 +2,69 @@ package com.example.service
 
 import com.example.dto.CreateUserRequest
 import com.example.dto.UpdateUserRequest
-import com.example.dto.User
 import com.example.dto.UserRole
+import com.example.model.UserEntity
+import com.example.repository.UserRepository
+import jakarta.annotation.PostConstruct
 import jakarta.inject.Singleton
+import jakarta.transaction.Transactional
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 
 @Singleton
-open class UserService {
-    private val userMap = ConcurrentHashMap<String, User>()
+open class UserService(private val userRepository: UserRepository) {
 
-    init {
-        addUser(CreateUserRequest(name = "Alice", email = "alice@example.com", role = UserRole.ADMIN))
-        addUser(CreateUserRequest(name = "Bob", email = "bob@example.com", role = UserRole.MODERATOR))
-        addUser(CreateUserRequest(name = "Charlie", email = "charlie@example.com"))
-        addUser(CreateUserRequest(name = "David", email = "david@example.com", role = UserRole.USER))
-        addUser(CreateUserRequest(name = "Eva", email = "eva@example.com", role = UserRole.ADMIN))
-        addUser(CreateUserRequest(name = "Frank", email = "frank@example.com", role = UserRole.MODERATOR))
-        addUser(CreateUserRequest(name = "Grace", email = "grace@example.com"))
+    @PostConstruct
+    fun init() {
+        if (userRepository.count() == 0L) {
+            createUser(CreateUserRequest(name = "Alice", email = "alice@example.com", role = UserRole.ADMIN))
+            createUser(CreateUserRequest(name = "Bob", email = "bob@example.com", role = UserRole.MODERATOR))
+            createUser(CreateUserRequest(name = "Charlie", email = "charlie@example.com"))
+            createUser(CreateUserRequest(name = "David", email = "david@example.com", role = UserRole.USER))
+            createUser(CreateUserRequest(name = "Eva", email = "eva@example.com", role = UserRole.ADMIN))
+            createUser(CreateUserRequest(name = "Frank", email = "frank@example.com", role = UserRole.MODERATOR))
+            createUser(CreateUserRequest(name = "Grace", email = "grace@example.com"))
+        }
     }
 
-    open fun addUser(user: CreateUserRequest): User {
-        val userId = UUID.randomUUID().toString()
-        val newUser = User(
-            id = userId,
+    @Transactional
+    open fun createUser(user: CreateUserRequest): UserEntity {
+
+        val newUser = UserEntity(
             name = user.name,
             email = user.email,
             role = user.role ?: UserRole.USER
         )
-        userMap[userId] = newUser
-        return newUser
+
+        println("Payload role: ${newUser.role}")
+
+        return userRepository.save(newUser)
     }
 
-    fun getAllUsers(): Collection<User> {
-        return userMap.values
+    fun getAllUsers(): List<UserEntity> {
+        return userRepository.findAll()
     }
 
-    fun getUser(id: String): User? {
-        return userMap[id]
+    fun getUser(id: UUID): UserEntity? {
+        return userRepository.findById(id).orElse(null)
     }
 
-    fun updateUser(id: String, payload: UpdateUserRequest): User? {
-        val existingUser = userMap[id] ?: return null
+    @Transactional
+    open fun updateUser(id: UUID, payload: UpdateUserRequest): UserEntity? {
+        val existingUser = getUser(id)
 
-        val updatedUser = existingUser.copy(
+        val updated = existingUser?.copy(
             name = payload.name ?: existingUser.name,
             email = payload.email ?: existingUser.email,
             role = payload.role ?: existingUser.role
         )
 
-        userMap[id] = updatedUser
-
-        return updatedUser
+        return userRepository.update(updated)
     }
 
-    fun removeUser(id: String): Boolean {
-        return userMap.remove(id) != null
+    fun deleteUser(id: UUID): Boolean {
+        return if (userRepository.existsById(id)) {
+            userRepository.deleteById(id)
+            true
+        } else false
     }
 }

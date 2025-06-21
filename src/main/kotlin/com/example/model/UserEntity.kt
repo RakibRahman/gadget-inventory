@@ -10,16 +10,16 @@ import java.util.*
 @Table(name = "users")
 data class UserEntity(
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     var id: UUID? = null,
 
     @Column(nullable = false)
-    var name: String,
+    var name: String = "",
 
     @Column(nullable = false, unique = true)
-    var email: String,
+    var email: String = "",
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    var role: UserRole
-
+    var role: UserRole = UserRole.USER
 )
