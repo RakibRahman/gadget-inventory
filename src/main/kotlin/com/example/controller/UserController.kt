@@ -12,7 +12,7 @@ import jakarta.validation.Valid
 import java.net.URI
 
 @Controller("/user")
-class UserController(private val userService: UserService) {
+open class UserController(private val userService: UserService) {
 
     @Get("/all")
     @Produces(MediaType.APPLICATION_JSON)
@@ -32,14 +32,14 @@ class UserController(private val userService: UserService) {
     }
 
     @Post(consumes = [MediaType.APPLICATION_JSON], produces = [MediaType.APPLICATION_JSON])
-    fun createUser(@Body @Valid payload: CreateUserRequest): HttpResponse<User> {
-        val user = userService.createUser(payload)
+    open fun createUser(@Body @Valid payload: CreateUserRequest): HttpResponse<User> {
+        val user = userService.addUser(payload)
         val location = URI.create("/user/${user.id}")
         return HttpResponse.created(user).headers { it.location(location) }
     }
 
     @Patch("/{id}", consumes = [MediaType.APPLICATION_JSON], produces = [MediaType.APPLICATION_JSON])
-    fun updateUserById(@PathVariable id: String, @Body @Valid payload: UpdateUserRequest): HttpResponse<Any> {
+    open fun updateUserById(@PathVariable id: String, @Body @Valid payload: UpdateUserRequest): HttpResponse<Any> {
         val updateUser = userService.updateUser(id, payload)
         return if (updateUser != null) {
             HttpResponse.ok(updateUser)

@@ -13,16 +13,16 @@ open class UserService {
     private val userMap = ConcurrentHashMap<String, User>()
 
     init {
-        createUser(CreateUserRequest(name = "Alice", email = "alice@example.com", role = UserRole.ADMIN))
-        createUser(CreateUserRequest(name = "Bob", email = "bob@example.com", role = UserRole.MODERATOR))
-        createUser(CreateUserRequest(name = "Charlie", email = "charlie@example.com"))
-        createUser(CreateUserRequest(name = "David", email = "david@example.com", role = UserRole.USER))
-        createUser(CreateUserRequest(name = "Eva", email = "eva@example.com", role = UserRole.ADMIN))
-        createUser(CreateUserRequest(name = "Frank", email = "frank@example.com", role = UserRole.MODERATOR))
-        createUser(CreateUserRequest(name = "Grace", email = "grace@example.com"))
+        addUser(CreateUserRequest(name = "Alice", email = "alice@example.com", role = UserRole.ADMIN))
+        addUser(CreateUserRequest(name = "Bob", email = "bob@example.com", role = UserRole.MODERATOR))
+        addUser(CreateUserRequest(name = "Charlie", email = "charlie@example.com"))
+        addUser(CreateUserRequest(name = "David", email = "david@example.com", role = UserRole.USER))
+        addUser(CreateUserRequest(name = "Eva", email = "eva@example.com", role = UserRole.ADMIN))
+        addUser(CreateUserRequest(name = "Frank", email = "frank@example.com", role = UserRole.MODERATOR))
+        addUser(CreateUserRequest(name = "Grace", email = "grace@example.com"))
     }
-    
-    fun createUser(user: CreateUserRequest): User {
+
+    open fun addUser(user: CreateUserRequest): User {
         val userId = UUID.randomUUID().toString()
         val newUser = User(
             id = userId,

@@ -11,7 +11,7 @@ plugins {
 version = "0.1"
 group = "com.example"
 
-val kotlinVersion=project.properties.get("kotlinVersion")
+val kotlinVersion = project.properties.get("kotlinVersion")
 repositories {
     mavenCentral()
 }
@@ -36,6 +36,8 @@ dependencies {
     testImplementation("io.micronaut:micronaut-http-client")
     aotPlugins(platform("io.micronaut.platform:micronaut-platform:4.8.3"))
     aotPlugins("io.micronaut.security:micronaut-security-aot")
+    implementation("io.micronaut.validation:micronaut-validation")
+
 }
 
 
@@ -70,7 +72,7 @@ micronaut {
         deduceEnvironment = true
         optimizeNetty = true
         replaceLogbackXml = true
-        configurationProperties.put("micronaut.security.jwks.enabled","false")
+        configurationProperties.put("micronaut.security.jwks.enabled", "false")
     }
 }
 
