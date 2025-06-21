@@ -1,5 +1,6 @@
 package com.example.service
 
+import com.example.dto.CreateUserRequest
 import com.example.dto.UpdateUserRequest
 import com.example.dto.User
 import com.example.dto.UserRole
@@ -12,29 +13,33 @@ open class UserService {
     private val userMap = ConcurrentHashMap<String, User>()
 
     init {
-        addUser(User(name = "Alice", email = "alice@example.com", role = UserRole.ADMIN))
-        addUser(User(name = "Bob", email = "bob@example.com", role = UserRole.MODERATOR))
-        addUser(User(name = "Charlie", email = "charlie@example.com"))
-        addUser(User(name = "David", email = "david@example.com", role = UserRole.USER))
-        addUser(User(name = "Eva", email = "eva@example.com", role = UserRole.ADMIN))
-        addUser(User(name = "Frank", email = "frank@example.com", role = UserRole.MODERATOR))
-        addUser(User(name = "Grace", email = "grace@example.com"))
+        createUser(CreateUserRequest(name = "Alice", email = "alice@example.com", role = UserRole.ADMIN))
+        createUser(CreateUserRequest(name = "Bob", email = "bob@example.com", role = UserRole.MODERATOR))
+        createUser(CreateUserRequest(name = "Charlie", email = "charlie@example.com"))
+        createUser(CreateUserRequest(name = "David", email = "david@example.com", role = UserRole.USER))
+        createUser(CreateUserRequest(name = "Eva", email = "eva@example.com", role = UserRole.ADMIN))
+        createUser(CreateUserRequest(name = "Frank", email = "frank@example.com", role = UserRole.MODERATOR))
+        createUser(CreateUserRequest(name = "Grace", email = "grace@example.com"))
     }
-
-
-    fun addUser(user: User): User {
+    
+    fun createUser(user: CreateUserRequest): User {
         val userId = UUID.randomUUID().toString()
-        val newUser = user.copy(id = userId)
+        val newUser = User(
+            id = userId,
+            name = user.name,
+            email = user.email,
+            role = user.role ?: UserRole.USER
+        )
         userMap[userId] = newUser
         return newUser
     }
 
-    fun getAllUser(): Collection<User> {
+    fun getAllUsers(): Collection<User> {
         return userMap.values
     }
 
     fun getUser(id: String): User? {
-        return if (userMap.containsKey(id)) userMap.get(id) else null
+        return userMap[id]
     }
 
     fun updateUser(id: String, payload: UpdateUserRequest): User? {
@@ -51,7 +56,7 @@ open class UserService {
         return updatedUser
     }
 
-    fun removeUser(id: String) {
-        if (userMap.containsKey(id)) userMap.remove(id)
+    fun removeUser(id: String): Boolean {
+        return userMap.remove(id) != null
     }
 }

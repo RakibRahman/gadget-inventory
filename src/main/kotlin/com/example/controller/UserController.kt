@@ -1,5 +1,6 @@
 package com.example.controller
 
+import com.example.dto.CreateUserRequest
 import com.example.dto.Message
 import com.example.dto.UpdateUserRequest
 import com.example.dto.User
@@ -8,6 +9,7 @@ import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.*
 import jakarta.validation.Valid
+import java.net.URI
 
 @Controller("/user")
 class UserController(private val userService: UserService) {
@@ -15,7 +17,7 @@ class UserController(private val userService: UserService) {
     @Get("/all")
     @Produces(MediaType.APPLICATION_JSON)
     fun getAllUsers(): Collection<User> {
-        return userService.getAllUser()
+        return userService.getAllUsers()
     }
 
     @Get("/{id}")
@@ -25,14 +27,15 @@ class UserController(private val userService: UserService) {
         return if (user != null) {
             HttpResponse.ok(user)
         } else {
-            HttpResponse.notFound(Message("User not found"))
+            HttpResponse.notFound(Message("User with id '$id' not found"))
         }
     }
 
     @Post(consumes = [MediaType.APPLICATION_JSON], produces = [MediaType.APPLICATION_JSON])
-    fun createUser(@Body @Valid payload: User): HttpResponse<User> {
-        val user = userService.addUser(payload)
-        return HttpResponse.created(user)
+    fun createUser(@Body @Valid payload: CreateUserRequest): HttpResponse<User> {
+        val user = userService.createUser(payload)
+        val location = URI.create("/user/${user.id}")
+        return HttpResponse.created(user).headers { it.location(location) }
     }
 
     @Patch("/{id}", consumes = [MediaType.APPLICATION_JSON], produces = [MediaType.APPLICATION_JSON])
@@ -41,8 +44,18 @@ class UserController(private val userService: UserService) {
         return if (updateUser != null) {
             HttpResponse.ok(updateUser)
         } else {
-            HttpResponse.notFound(Message("User update failed"))
+            HttpResponse.notFound(Message("User with id '$id' not found"))
         }
     }
 
+    @Delete("/{id}")
+    fun removeUserById(id: String): HttpResponse<Any> {
+        val removed = userService.removeUser(id)
+
+        return if (removed) {
+            HttpResponse.noContent()
+        } else {
+            HttpResponse.notFound(Message("User not found"))
+        }
+    }
 }
