@@ -4,6 +4,17 @@ micronaut:
   security:
     enabled: false
 
+jpa:
+  default:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update
+          
 datasources:
   default:
-    enabled: false
+    enabled: true
+    url: jdbc:postgresql://localhost:5432/gadgetdb
+    username: postgres
+    password: admin
+    driverClassName: org.postgresql.Driver

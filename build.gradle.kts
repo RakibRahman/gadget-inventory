@@ -37,7 +37,8 @@ dependencies {
     aotPlugins(platform("io.micronaut.platform:micronaut-platform:4.8.3"))
     aotPlugins("io.micronaut.security:micronaut-security-aot")
     implementation("io.micronaut.validation:micronaut-validation")
-
+    implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
+    implementation("jakarta.persistence:jakarta.persistence-api")
 }
 
 
