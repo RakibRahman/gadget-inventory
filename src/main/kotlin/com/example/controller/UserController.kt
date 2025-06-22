@@ -5,6 +5,7 @@ import com.example.dto.Message
 import com.example.dto.UpdateUserRequest
 import com.example.model.UserEntity
 import com.example.service.UserService
+import com.example.util.ApiRoutes
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.*
@@ -12,7 +13,7 @@ import jakarta.validation.Valid
 import java.net.URI
 import java.util.*
 
-@Controller("/user")
+@Controller(ApiRoutes.USERS)
 open class UserController(private val userService: UserService) {
 
     @Get("/all")
