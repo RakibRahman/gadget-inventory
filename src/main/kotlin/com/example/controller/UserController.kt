@@ -18,8 +18,11 @@ open class UserController(private val userService: UserService) {
 
     @Get("/all")
     @Produces(MediaType.APPLICATION_JSON)
-    fun getAllUsers(): List<UserEntity> {
-        return userService.getAllUsers()
+    fun getAllUsers(@QueryValue query: String?): List<UserEntity> {
+        if (query.isNullOrEmpty()) {
+            return userService.getAllUsers()
+        }
+        return userService.searchUsersByNameOrEmail(query)
     }
 
     @Get("/{id}")

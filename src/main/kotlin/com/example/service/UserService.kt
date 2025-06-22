@@ -67,4 +67,8 @@ open class UserService(private val userRepository: UserRepository) {
             true
         } else false
     }
+
+    fun searchUsersByNameOrEmail(query: String): List<UserEntity> {
+        return userRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(query, query)
+    }
 }
