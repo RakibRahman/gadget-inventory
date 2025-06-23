@@ -7,10 +7,6 @@ import java.util.*
 
 @Repository
 interface UserRepository : JpaRepository<UserEntity, UUID> {
-    fun findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
-        name: String,
-        email: String
-    ): List<UserEntity>
-
+    fun findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(name: String, email: String): List<UserEntity>
     fun findByEmail(email: String): Optional<UserEntity>
 }
