@@ -1,5 +1,6 @@
 package com.example.dto
 
+import com.example.model.AuthProvider
 import io.micronaut.serde.annotation.Serdeable
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
@@ -22,7 +23,9 @@ data class User(
 data class CreateUserRequest(
     @field:NotBlank val name: String,
     @field:Email val email: String,
-    val role: UserRole? = UserRole.USER
+    val role: UserRole? = UserRole.USER,
+    val provider: AuthProvider? = AuthProvider.EMAIL,
+    val password: String? = ""
 )
 
 @Serdeable

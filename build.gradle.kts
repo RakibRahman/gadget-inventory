@@ -39,6 +39,7 @@ dependencies {
     implementation("io.micronaut.validation:micronaut-validation")
     implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
     implementation("jakarta.persistence:jakarta.persistence-api")
+    implementation("de.mkammerer:argon2-jvm-nolibs:2.12")
 }
 
 
