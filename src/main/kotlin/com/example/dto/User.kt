@@ -21,8 +21,13 @@ data class User(
 
 @Serdeable
 data class CreateUserRequest(
-    @field:NotBlank val name: String,
-    @field:Email val email: String,
+    @field:NotBlank(message = "Name is required")
+    val name: String,
+
+    @field:NotBlank(message = "Email is required")
+    @field:Email(message = "Email must be valid")
+    val email: String,
+
     val role: UserRole? = UserRole.USER,
     val provider: AuthProvider? = AuthProvider.EMAIL,
     val password: String? = ""
@@ -33,4 +38,10 @@ data class UpdateUserRequest(
     var name: String? = null,
     var email: String? = null,
     var role: UserRole? = null
+)
+
+@Serdeable
+data class LoginRequest(
+    val email: String,
+    val password: String
 )

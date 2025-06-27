@@ -3,41 +3,56 @@ package com.example.service
 import com.example.dto.CreateUserRequest
 import com.example.dto.UpdateUserRequest
 import com.example.dto.UserRole
+import com.example.model.AuthProvider
 import com.example.model.UserEntity
 import com.example.repository.UserRepository
-import jakarta.annotation.PostConstruct
 import jakarta.inject.Singleton
 import jakarta.transaction.Transactional
 import java.util.*
 
 @Singleton
-open class UserService(private val userRepository: UserRepository) {
+open class UserService(
+    private val userRepository: UserRepository,
+    private val authService: AuthService
+) {
 
-    @PostConstruct
-    fun init() {
-        if (userRepository.count() == 0L) {
-            createUser(CreateUserRequest(name = "Alice", email = "alice@example.com", role = UserRole.ADMIN))
-            createUser(CreateUserRequest(name = "Bob", email = "bob@example.com", role = UserRole.MODERATOR))
-            createUser(CreateUserRequest(name = "Charlie", email = "charlie@example.com"))
-            createUser(CreateUserRequest(name = "David", email = "david@example.com", role = UserRole.USER))
-            createUser(CreateUserRequest(name = "Eva", email = "eva@example.com", role = UserRole.ADMIN))
-            createUser(CreateUserRequest(name = "Frank", email = "frank@example.com", role = UserRole.MODERATOR))
-            createUser(CreateUserRequest(name = "Grace", email = "grace@example.com"))
+    companion object {
+
+        fun validatePassword(password: String) {
+            val minLength = 16
+            val specialCharRegex = Regex("[@#\$%^&+=*!]")
+
+            require(password.length >= minLength) { "Password must be at least $minLength characters long" }
+
+            require(password.any { it.isDigit() }) { "Password must include at least one digit" }
+
+            require(specialCharRegex.containsMatchIn(password)) { "Password must include at least one special character like @, #, $, etc." }
         }
     }
 
     @Transactional
-    open fun createUser(user: CreateUserRequest): UserEntity {
+    open fun createUser(payload: CreateUserRequest): UserEntity {
+
+        if (!payload.password.isNullOrBlank()) {
+            validatePassword(payload.password)
+        }
 
         val newUser = UserEntity(
-            name = user.name,
-            email = user.email,
-            role = user.role ?: UserRole.USER
+            name = payload.name,
+            email = payload.email,
+            role = payload.role ?: UserRole.USER
         )
 
         println("Payload role: ${newUser.role}")
+        println("payload provider: ${payload.provider}")
 
-        return userRepository.save(newUser)
+        val savedUser = userRepository.save(newUser)
+
+        if (!payload.password.isNullOrBlank()) {
+            authService.saveAuth(AuthProvider.EMAIL, savedUser, payload.password)
+        }
+
+        return savedUser
     }
 
     fun getAllUsers(): List<UserEntity> {
