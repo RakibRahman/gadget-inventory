@@ -1,5 +1,6 @@
 package com.example.exception
 
+import io.micronaut.context.annotation.Replaces
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.server.exceptions.ExceptionHandler
@@ -8,6 +9,7 @@ import jakarta.inject.Singleton
 import jakarta.validation.ConstraintViolationException
 
 @Singleton
+@Replaces(io.micronaut.validation.exceptions.ConstraintExceptionHandler::class)
 class ValidationExceptionHandler :
     ExceptionHandler<ConstraintViolationException, HttpResponse<ValidationErrorResponse>> {
 
