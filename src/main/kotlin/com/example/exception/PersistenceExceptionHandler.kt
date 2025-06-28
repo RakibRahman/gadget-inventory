@@ -38,4 +38,3 @@ class PersistenceExceptionHandler :
     }
 }
 
-class BadRequestException(message: String) : RuntimeException(message)
