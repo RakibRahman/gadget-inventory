@@ -39,9 +39,3 @@ data class UpdateUserRequest(
     var email: String? = null,
     var role: UserRole? = null
 )
-
-@Serdeable
-data class LoginRequest(
-    val email: String,
-    val password: String
-)

@@ -1,6 +1,5 @@
 package com.example.controller
 
-import com.example.dto.CreateUserRequest
 import com.example.dto.Message
 import com.example.dto.UpdateUserRequest
 import com.example.model.UserEntity
@@ -10,7 +9,6 @@ import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.*
 import jakarta.validation.Valid
-import java.net.URI
 import java.util.*
 
 @Controller(ApiRoutes.USERS)
@@ -34,13 +32,6 @@ open class UserController(private val userService: UserService) {
         } else {
             HttpResponse.notFound(Message("User with id '$id' not found"))
         }
-    }
-
-    @Post(consumes = [MediaType.APPLICATION_JSON], produces = [MediaType.APPLICATION_JSON])
-    open fun createUser(@Body @Valid payload: CreateUserRequest): HttpResponse<UserEntity> {
-        val user = userService.createUser(payload)
-        val location = URI.create("/user/${user.id}")
-        return HttpResponse.created(user).headers { it.location(location) }
     }
 
     @Patch("/{id}", consumes = [MediaType.APPLICATION_JSON], produces = [MediaType.APPLICATION_JSON])
